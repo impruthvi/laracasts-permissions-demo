@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Article;
+use App\Models\Role;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -14,18 +15,45 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $adminRole = Role::create(['name' => 'admin']);
+        $authorRole = Role::create(['name' => 'author']);
+        $editorRole = Role::create(['name' => 'editor']);
 
-        $user = User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-            'is_admin' => true,
+        $adminUser = User::factory()->create([
+            'name' => 'Admin',
+            'email' => 'admin@example.com',
         ]);
 
-        Article::factory(14)
-            ->recycle($user)
+        $adminUser->roles()->attach($adminRole);
+
+        $authorUser = User::factory()->create([
+            'name' => 'Author',
+            'email' => 'author@example.com',
+        ]);
+
+        $authorUser->roles()->attach($authorRole);
+
+        $editorUser = User::factory()->create([
+            'name' => 'Editor',
+            'email' => 'editor@example.com',
+        ]);
+
+        $editorUser->roles()->attach($editorRole);
+
+        $authorEditorUser = User::factory()->create([
+            'name' => 'Author/Editor',
+            'email' => 'ae@example.com',
+        ]);
+
+        $authorEditorUser->roles()->attach($authorRole);
+        $authorEditorUser->roles()->attach($editorRole);
+
+        Article::factory(10)
+            ->recycle($authorUser)
             ->create();
 
-        Article::factory(15)->create();
+        Article::factory(10)
+            ->recycle($authorEditorUser)
+            ->create();
     }
 }

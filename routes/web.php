@@ -24,7 +24,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::resource('articles', ArticlesController::class)->except('show');
-    Route::middleware('can:admin-access')
+    Route::middleware('can:access-admin')
         ->resource('users', UsersController::class)->except(['show', 'create', 'store']);
 
 
