@@ -23,11 +23,10 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::resource('articles', ArticlesController::class)->except('show');
-    Route::middleware('can:access-admin')
+    Route::middleware('role:admin,author,editor')
+        ->resource('articles', ArticlesController::class)->except('show');
+    Route::middleware('role:admin')
         ->resource('users', UsersController::class)->except(['show', 'create', 'store']);
-
-
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
