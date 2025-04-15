@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -34,7 +35,7 @@ class UserUpdateRequest extends FormRequest
     {
         $validator->after(function ($validator) {
             if ($this->user()->id === $this->route('user')->id) {
-                $adminRoleId = \App\Models\Role::where('name', 'admin')->first()->id;
+                $adminRoleId = Role::where('auth_code', 'admin')->first()->id;
 
                 if (!in_array($adminRoleId, $this->input('roles', []))) {
                     $validator->errors()->add(

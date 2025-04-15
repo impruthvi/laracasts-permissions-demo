@@ -19,7 +19,7 @@ class LoadRolesMiddleware
     {
         if(Auth::check()) {
             Context::addHidden('roles', 
-                array_map('strtolower', Auth::user()->roles->pluck('name')->toArray())
+                array_map('strtolower', Auth::user()->roles->pluck('auth_code')->toArray())
             );
         }
         return $next($request);

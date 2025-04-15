@@ -15,9 +15,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $adminRole = Role::create(['name' => 'admin']);
-        $authorRole = Role::create(['name' => 'author']);
-        $editorRole = Role::create(['name' => 'editor']);
+        $adminRole = Role::create(['auth_code' => 'admin', 'name' => 'System Administrator']);
+        $authorRole = Role::create(['auth_code' => 'author', 'name' => 'Article Author']);
+        $editorRole = Role::create(['auth_code' => 'editor', 'name' => 'Article Editor']);
 
         $adminUser = User::factory()->create([
             'name' => 'Admin',

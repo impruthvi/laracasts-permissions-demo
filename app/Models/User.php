@@ -43,7 +43,7 @@ class User extends Authenticatable
             return in_array(strtolower($role), Context::getHidden('roles'));
         }
 
-        return $this->roles->contains('name', $role);
+        return $this->roles->contains('auth_code', $role);
     }
 
     public function hasAnyRole(array $roles): bool
@@ -54,7 +54,7 @@ class User extends Authenticatable
             return !empty($matches);
         }
 
-        return $this->roles()->whereIn('name', $roles)->exists();
+        return $this->roles()->whereIn('auth_code', $roles)->exists();
     }
 
     /**
