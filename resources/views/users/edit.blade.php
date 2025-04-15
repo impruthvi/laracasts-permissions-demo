@@ -9,7 +9,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <h2 class="text-xl bold">Edit Article</h2>
+                    <h2 class="text-xl bold">Edit User</h2>
                     <form method="post" action="{{ route('users.update', ['user' => $user->id]) }}" class="mt-6 space-y-6">
                         @csrf
                         @method('patch')
@@ -21,11 +21,20 @@
                         </div>
 
                         <div>
-                            <x-input-label for="email" :value="__('Email')" />
-                            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)" required autocomplete="username" />
-                            <x-input-error class="mt-2" :messages="$errors->get('email')" />
-                        </div>
+                            <x-input-label for="roles" :value="__('Roles')" />
 
+                            <select name="roles[]" id="roles"
+                                    class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                                    multiple>
+                                @foreach ($roles as $role)
+                                    <option value="{{ $role->id }}" {{ $user->hasRole($role->name) ? 'selected' : '' }}>
+                                        {{ $role->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <x-input-error class="mt-2" :messages="$errors->get('roles')" />
+
+                        </div>
                         <div class="flex items-center gap-4">
                             <x-primary-button>{{ __('Save') }}</x-primary-button>
                         </div>
