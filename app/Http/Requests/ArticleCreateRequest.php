@@ -2,8 +2,11 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Article;
 use App\Models\User;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 
 class ArticleCreateRequest extends FormRequest
@@ -13,7 +16,12 @@ class ArticleCreateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        $response = Gate::inspect('update', Article::class);
+        if ($response->allowed()) {
+            return true;
+        }
+
+        throw new ModelNotFoundException();
     }
 
     /**
@@ -25,7 +33,7 @@ class ArticleCreateRequest extends FormRequest
     {
         return [
             'title' => ['required', 'string', 'max:255'],
-            'content' => ['required','string'],
+            'content' => ['required', 'string'],
         ];
     }
 }

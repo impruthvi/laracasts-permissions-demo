@@ -13,23 +13,17 @@ class ArticlePolicy
      */
     public function viewAny(User $user): bool
     {
-        //
-    }
-
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, Article $article): bool
-    {
-        //
+        return $user->hasAnyRole(['admin', 'editor']);
     }
 
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user): bool
+    public function create(User $user): Response
     {
-        //
+        return $user->hasAnyRole(['admin', 'author']) ?
+            Response::allow() :
+            Response::denyAsNotFound();
     }
 
     /**
@@ -41,7 +35,7 @@ class ArticlePolicy
             return Response::allow();
         }
 
-        return $user->hasRole('author') && $user->id === $article->author_id 
+        return $user->hasRole('author') && $user->id === $article->author_id
             ? Response::allow()
             : Response::denyAsNotFound();
     }
@@ -49,24 +43,14 @@ class ArticlePolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Article $article): bool
+    public function delete(User $user, Article $article): Response
     {
-        //
-    }
+        if ($user->hasAnyRole(['admin', 'editor'])) {
+            return Response::allow();
+        }
 
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Article $article): bool
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Article $article): bool
-    {
-        //
+        return $user->hasRole('author') && $user->id === $article->author_id
+            ? Response::allow()
+            : Response::denyAsNotFound();
     }
 }

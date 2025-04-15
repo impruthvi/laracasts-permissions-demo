@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ArticleCreateRequest;
 use App\Http\Requests\ArticleUpdateRequest;
 use App\Models\Article;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
 class ArticlesController extends Controller
@@ -15,7 +16,7 @@ class ArticlesController extends Controller
     public function index()
     {
         return view('articles.index', [
-            'articles' => Article::all(),
+            'articles' => Article::visibleTo(Auth::user())->get(),
         ]);
     }
 
@@ -24,6 +25,8 @@ class ArticlesController extends Controller
      */
     public function create()
     {
+        Gate::authorize('create', Article::class);
+
         return view('articles.create');
     }
 
@@ -66,6 +69,8 @@ class ArticlesController extends Controller
      */
     public function destroy(Article $article)
     {
+        Gate::authorize('delete', $article);
+
         $article->delete();
 
         return redirect()->route('articles.index');
