@@ -1,8 +1,8 @@
 <?php
 
 use App\Http\Controllers\ArticlesController;
+use App\Http\Controllers\PermissionsController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\RolesController;
 use App\Http\Controllers\UsersController;
 use App\Models\Article;
 use Illuminate\Support\Facades\Route;
@@ -29,7 +29,7 @@ Route::middleware('auth')->group(function () {
         
     Route::middleware('can:manage-users')->group(function () {
         Route::resource('users', UsersController::class)->except(['show', 'create', 'store']);
-        Route::resource('roles', RolesController::class)->except('show');
+        Route::resource('permissions', PermissionsController::class)->except(['show']);
     });
 });
 
