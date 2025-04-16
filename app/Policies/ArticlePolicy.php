@@ -8,6 +8,14 @@ use Illuminate\Auth\Access\Response;
 
 class ArticlePolicy
 {
+
+    public function manageArticles(User $user): Response
+    {
+        return $user->hasAnyRole(['admin', 'editor', 'author']) ?
+            Response::allow() :
+            Response::denyAsNotFound();
+    }
+
     /**
      * Determine whether the user can view any models.
      */

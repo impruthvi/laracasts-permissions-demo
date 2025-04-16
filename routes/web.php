@@ -24,10 +24,10 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::middleware('role:admin,author,editor')
+    Route::middleware('can:manage-articles, App\Models\Article')
         ->resource('articles', ArticlesController::class)->except('show');
         
-    Route::middleware('role:admin')->group(function () {
+    Route::middleware('can:manage-users')->group(function () {
         Route::resource('users', UsersController::class)->except(['show', 'create', 'store']);
         Route::resource('roles', RolesController::class)->except('show');
     });
