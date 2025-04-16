@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ArticlesController;
+use App\Http\Controllers\GroupsController;
 use App\Http\Controllers\PermissionsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UsersController;
@@ -30,6 +31,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware('can:manage-users')->group(function () {
         Route::resource('users', UsersController::class)->except(['show', 'create', 'store']);
         Route::resource('permissions', PermissionsController::class)->except(['show']);
+        Route::resource('groups', GroupsController::class)->except(['show']);
     });
 });
 

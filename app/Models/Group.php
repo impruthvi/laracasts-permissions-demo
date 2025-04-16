@@ -6,14 +6,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Permission extends Model
+class Group extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['auth_code', 'description'];
+    protected $fillable = ['name'];
 
-    public function groups(): BelongsToMany
+    public function permissions(): BelongsToMany
     {
-        return $this->belongsToMany(Group::class);
+        return $this->belongsToMany(Permission::class);
     }
 }
