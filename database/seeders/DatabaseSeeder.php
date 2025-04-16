@@ -43,7 +43,7 @@ class DatabaseSeeder extends Seeder
             ]
         ]);
 
-        $adminUser->roles()->attach($adminRole);
+        // $adminUser->roles()->attach($adminRole);
 
         $authorUser = User::factory()->create([
             'name' => 'Author',
@@ -55,7 +55,7 @@ class DatabaseSeeder extends Seeder
             ]
         ]);
 
-        $authorUser->roles()->attach($authorRole);
+        // $authorUser->roles()->attach($authorRole);
 
         $editorUser = User::factory()->create([
             'name' => 'Editor',
@@ -66,7 +66,7 @@ class DatabaseSeeder extends Seeder
             ]
         ]);
 
-        $editorUser->roles()->attach($editorRole);
+        // $editorUser->roles()->attach($editorRole);
 
         $authorEditorUser = User::factory()->create([
             'name' => 'Author/Editor',
@@ -78,8 +78,8 @@ class DatabaseSeeder extends Seeder
             ]
         ]);
 
-        $authorEditorUser->roles()->attach($authorRole);
-        $authorEditorUser->roles()->attach($editorRole);
+        // $authorEditorUser->roles()->attach($authorRole);
+        // $authorEditorUser->roles()->attach($editorRole);
 
         Article::factory(10)
             ->recycle($authorUser)

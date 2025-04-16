@@ -36,42 +36,35 @@ class User extends Authenticatable
         return $this->hasMany(Article::class, 'author_id');
     }
 
-    public function roles(): BelongsToMany
+    public function groups(): BelongsToMany
     {
-        return $this->belongsToMany(Role::class);
+        return $this->belongsToMany(Group::class);
     }
 
-    public function hasRole(string $role): bool
+    public function getAllPermissions()
     {
-
-        if (Auth::user()->id === $this->id && Context::hasHidden('roles')) {
-            return in_array(strtolower($role), Context::getHidden('roles'));
+        if (Auth::user()->id === $this->id && Context::hasHidden('permissions')) {
+            return Context::getHidden('permissions');
         }
 
-        return $this->roles->contains('auth_code', $role);
-    }
+        $groupPermissions = $this->groups()->get()->pluck('permissions')->flatten()->pluck('auth_code');
+        $permissions = collect($this->permissions);
 
-    public function hasAnyRole(array $roles): bool
-    {
-        if (Auth::user()->id === $this->id && Context::hasHidden('roles')) {
-            $matches =  array_intersect(array_map('strtolower', $roles), Context::getHidden('roles'));
-
-            return !empty($matches);
-        }
-
-        return $this->roles()->whereIn('auth_code', $roles)->exists();
+        return $groupPermissions->merge($permissions)->unique()->map(function ($permission) {
+            return strtolower($permission);
+        });
     }
 
     public function hasPermission(string $permission): bool
     {
-        return in_array(strtolower($permission), $this->permissions);
+        return $this->getAllPermissions()->contains(strtolower($permission));
     }
 
     public function hasAnyPermission(array $permissions): bool
     {
-        $matches = array_intersect(array_map('strtolower', $permissions), $this->permissions);
+        $perms = array_map('strtolower', $permissions);
 
-        return !empty($matches);
+        return $this->getAllPermissions()->intersect($perms)->isNotEmpty();
     }
 
     /**

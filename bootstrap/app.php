@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Middleware\LoadRolesMiddleware;
+use App\Http\Middleware\LoadPermissionsMiddleware;
 use App\Http\Middleware\RoleAccessMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -15,7 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
 
         $middleware->appendToGroup('web', [
-            LoadRolesMiddleware::class,
+            LoadPermissionsMiddleware::class,
         ]);
 
         $middleware->alias([
