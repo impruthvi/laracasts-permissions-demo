@@ -11,7 +11,13 @@ class ArticlePolicy
 
     public function manageArticles(User $user): Response
     {
-        return $user->hasAnyRole(['admin', 'editor', 'author']) ?
+        return $user->hasAnyPermission([
+            'article:create',
+            'article:update',
+            'article:delete',
+            'article:update-any',
+            'article:delete-any',
+        ]) ?
             Response::allow() :
             Response::denyAsNotFound();
     }
@@ -21,7 +27,7 @@ class ArticlePolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasAnyRole(['admin', 'editor']);
+        return $user->hasAnyPermission(['article:create', 'article:update-any', 'article:delete-any']);
     }
 
     /**
@@ -29,7 +35,7 @@ class ArticlePolicy
      */
     public function create(User $user): Response
     {
-        return $user->hasAnyRole(['admin', 'author']) ?
+        return $user->hasPermission('article:create') ?
             Response::allow() :
             Response::denyAsNotFound();
     }
@@ -39,13 +45,13 @@ class ArticlePolicy
      */
     public function update(User $user, Article $article): Response
     {
-        if ($user->hasAnyRole(['admin', 'editor'])) {
+        if ($user->hasPermission('article:update-any')) {
             return Response::allow();
         }
 
-        return $user->hasRole('author') && $user->id === $article->author_id
-            ? Response::allow()
-            : Response::denyAsNotFound();
+        return $user->hasPermission('article:update') && $user->id === $article->author_id ?
+            Response::allow() :
+            Response::denyAsNotFound();
     }
 
     /**
@@ -53,12 +59,12 @@ class ArticlePolicy
      */
     public function delete(User $user, Article $article): Response
     {
-        if ($user->hasAnyRole(['admin', 'editor'])) {
+        if ($user->hasPermission('article:delete-any')) {
             return Response::allow();
         }
 
-        return $user->hasRole('author') && $user->id === $article->author_id
-            ? Response::allow()
-            : Response::denyAsNotFound();
+        return $user->hasPermission('article:delete') && $user->id === $article->author_id ?
+            Response::allow() :
+            Response::denyAsNotFound();
     }
 }
