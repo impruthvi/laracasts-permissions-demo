@@ -25,6 +25,12 @@ class DatabaseSeeder extends Seeder
             ['auth_code' => 'article:delete-any', 'description' => 'Delete any article'],
             ['auth_code' => 'user:create', 'description' => 'Create user'],
             ['auth_code' => 'permission:create', 'description' => 'Create permission'],
+            ['auth_code' => 'permission:update', 'description' => 'Update permission'],
+            ['auth_code' => 'permission:delete', 'description' => 'Delete permission'],
+            ['auth_code' => 'permission:delete-any', 'description' => 'Delete any permission'],
+            ['auth_code' => 'article:create:deny', 'description' => 'Deny create article'],
+            ['auth_code' => 'article:update-any:deny', 'description' => 'Deny update any article'],
+            ['auth_code' => 'article:delete-any:deny', 'description' => 'Deny delete any article'],
         ]);
 
         $adminRole = Role::create(['auth_code' => 'admin', 'name' => 'System Administrator']);
