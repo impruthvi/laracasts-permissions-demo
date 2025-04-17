@@ -65,14 +65,24 @@ class User extends Authenticatable
         });
     }
 
-    public function hasPermission(string $permission): bool
+    public function hasPermission($permission): bool
     {
+        if ($permission instanceof \BackedEnum) {
+            $permission = $permission->value;
+        }
+
         return $this->getAllPermissions()->contains(strtolower($permission));
     }
 
     public function hasAnyPermission(array $permissions): bool
     {
-        $perms = array_map('strtolower', $permissions);
+        $perms = array_map(function ($value) {
+            if ($value instanceof \BackedEnum) {
+                return $value->value;
+            }
+
+            return strtolower($value);
+        }, $permissions);
 
         return $this->getAllPermissions()->intersect($perms)->isNotEmpty();
     }

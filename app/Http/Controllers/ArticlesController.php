@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ArticleAbilitiesEnum;
 use App\Http\Requests\ArticleCreateRequest;
 use App\Http\Requests\ArticleUpdateRequest;
 use App\Models\Article;
@@ -25,7 +26,7 @@ class ArticlesController extends Controller
      */
     public function create()
     {
-        Gate::authorize('create', Article::class);
+        Gate::authorize(ArticleAbilitiesEnum::CREATE, Article::class);
 
         return view('articles.create');
     }
@@ -47,7 +48,7 @@ class ArticlesController extends Controller
      */
     public function edit(Article $article)
     {
-        Gate::authorize('update', $article);
+        Gate::authorize(ArticleAbilitiesEnum::UPDATE, $article);
 
         return view('articles.edit', [
             'article' => $article
@@ -69,7 +70,7 @@ class ArticlesController extends Controller
      */
     public function destroy(Article $article)
     {
-        Gate::authorize('delete', $article);
+        Gate::authorize(ArticleAbilitiesEnum::DELETE, $article);
 
         $article->delete();
 

@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Enums\Enums\ArticlePermissionsEnum;
 use App\Models\Article;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
@@ -12,11 +13,11 @@ class ArticlePolicy
     public function manageArticles(User $user): Response
     {
         return $user->hasAnyPermission([
-            'article:create',
-            'article:update',
-            'article:delete',
-            'article:update-any',
-            'article:delete-any',
+            ArticlePermissionsEnum::ALLOW_CREATE,
+            ArticlePermissionsEnum::ALLOW_UPDATE,
+            ArticlePermissionsEnum::ALLOW_DELETE,
+            ArticlePermissionsEnum::ALLOW_UPDATE_ANY,
+            ArticlePermissionsEnum::ALLOW_DELETE_ANY,
         ]) ?
             Response::allow() :
             Response::denyAsNotFound();
@@ -27,7 +28,11 @@ class ArticlePolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasAnyPermission(['article:create', 'article:update-any', 'article:delete-any']);
+        return $user->hasAnyPermission([
+            ArticlePermissionsEnum::ALLOW_CREATE,
+            ArticlePermissionsEnum::ALLOW_UPDATE_ANY,
+            ArticlePermissionsEnum::ALLOW_DELETE_ANY,
+        ]);
     }
 
     /**
@@ -36,11 +41,11 @@ class ArticlePolicy
     public function create(User $user): Response
     {
 
-        if ($user->hasPermission('article:create:deny')) {
+        if ($user->hasPermission(ArticlePermissionsEnum::DENY_CREATE)) {
             return Response::denyAsNotFound();
         }
 
-        return $user->hasPermission('article:create') ?
+        return $user->hasPermission(ArticlePermissionsEnum::ALLOW_CREATE) ?
             Response::allow() :
             Response::denyAsNotFound();
     }
@@ -53,16 +58,16 @@ class ArticlePolicy
 
         if ($user->didNotWrite($article)) {
 
-            if ($user->hasPermission('article:update-any:deny')) {
+            if ($user->hasPermission(ArticlePermissionsEnum::DENY_UPDATE_ANY)) {
                 return Response::denyAsNotFound();
             }
 
-            return $user->hasPermission('article:update-any') ?
+            return $user->hasPermission(ArticlePermissionsEnum::ALLOW_UPDATE_ANY) ?
                 Response::allow() :
                 Response::denyAsNotFound();
         }
 
-        return $user->hasPermission('article:update') ?
+        return $user->hasPermission(ArticlePermissionsEnum::ALLOW_UPDATE) ?
             Response::allow() :
             Response::denyAsNotFound();
     }
@@ -75,16 +80,16 @@ class ArticlePolicy
 
         if ($user->didNotWrite($article)) {
 
-            if ($user->hasPermission('article:delete-any:deny')) {
+            if ($user->hasPermission(ArticlePermissionsEnum::DENY_DELETE_ANY)) {
                 return Response::denyAsNotFound();
             }
 
-            return $user->hasPermission('article:delete-any') ?
+            return $user->hasPermission(ArticlePermissionsEnum::ALLOW_DELETE_ANY) ?
                 Response::allow() :
                 Response::denyAsNotFound();
         }
 
-        return $user->hasPermission('article:delete') ?
+        return $user->hasPermission(ArticlePermissionsEnum::ALLOW_DELETE) ?
             Response::allow() :
             Response::denyAsNotFound();
     }

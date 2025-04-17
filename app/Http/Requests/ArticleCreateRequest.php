@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\ArticleAbilitiesEnum;
 use App\Models\Article;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -16,7 +17,7 @@ class ArticleCreateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        $response = Gate::inspect('update', Article::class);
+        $response = Gate::inspect(ArticleAbilitiesEnum::CREATE, Article::class);
         if ($response->allowed()) {
             return true;
         }
